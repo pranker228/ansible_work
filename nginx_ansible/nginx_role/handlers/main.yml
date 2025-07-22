@@ -1,3 +1,7 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # handlers file for nginx_ansible/nginx-role
+
+- name: Starting Nginx service
+  shell: systemctl enable --now nginx.service
+  become: true

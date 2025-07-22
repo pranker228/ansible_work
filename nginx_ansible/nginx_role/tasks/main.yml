@@ -31,8 +31,8 @@
   become: true
   when: ansible_facts.os_family == "RedHat" or ansible_facts.os_family == "CentOS"
 
-- name: Starting Nginx service
-  shell: systemctl enable --now nginx.service
+- name: Remove old backup
+  command: "rm -rf {{ frontend_path }}.old"
   become: true
 
 - name: Backup frontend
