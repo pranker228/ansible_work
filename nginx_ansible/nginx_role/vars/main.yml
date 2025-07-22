@@ -4,4 +4,4 @@
 nginx_version_ubuntu: nginx=1.24.0-2ubuntu7.4
 nginx_version_centos: nginx=1:1.22.1-10.el8
 
-frontend_path: /usr/share/nginx/html/
+frontend_path: /usr/share/nginx/html

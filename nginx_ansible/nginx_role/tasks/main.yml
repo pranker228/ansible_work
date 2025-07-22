@@ -1,6 +1,22 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for nginx_ansible/nginx-role
+- name : Updating pkgs
+  apt:
+    name: "*"
+    state: latest
+    update_cache: yes
+  become: true
+  when: ansible_facts.os_family == "Debian" or ansible_facts.os_family == "Ubuntu"
+
+- name : Updating pkgs with dnf 
+  yum:
+    name: "*"
+    state: latest
+    update_cache: yes
+  become: true
+  when: ansible_facts.os_family == "RedHat" or ansible_facts.os_family == "CentOS"
+
 - name: Installing nginx on Debian 
   apt:
     name: "{{ nginx_version_ubuntu }}"
@@ -19,15 +35,18 @@
   shell: systemctl enable --now nginx.service
   become: true
 
-- name: Remove old frontend
-  ansible.builtin.file:
-    path: "{{ frontend_path }}"
-    state: absent
-  become: true
+- name: Backup frontend
+  command: "mv {{ frontend_path }} {{ frontend_path }}.old"
+
+#- name: Remove old frontend
+ # ansible.builtin.file:
+  #  path: "{{ frontend_path }}"
+   # state: absent
+ # become: true
 
 - name: Copying frontend nginx 
   ansible.builtin.copy:
-    src: files/html/
+    src: files/html
     dest: "{{ frontend_path }}"
   become: true
 
