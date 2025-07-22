@@ -1,0 +1,37 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for nginx_ansible/nginx-role
+- name: Installing nginx on Debian 
+  apt:
+    name: "{{ nginx_version_ubuntu }}"
+    state: present
+  become: true
+  when: ansible_facts.os_family == "Debian" or ansible_facts.os_family == "Ubuntu"
+
+- name: Installing Nginx on RedHat/CentOS
+  yum:
+    name: "{{ nginx_version_centos }}"
+    state: present
+  become: true
+  when: ansible_facts.os_family == "RedHat" or ansible_facts.os_family == "CentOS"
+
+- name: Starting Nginx service
+  shell: systemctl enable --now nginx.service
+  become: true
+
+- name: Remove old frontend
+  ansible.builtin.file:
+    path: "{{ frontend_path }}"
+    state: absent
+  become: true
+
+- name: Copying frontend nginx 
+  ansible.builtin.copy:
+    src: files/html/
+    dest: "{{ frontend_path }}"
+  become: true
+
+
+- name: Reload nginx 
+  shell: nginx -s reload
+  become: true
